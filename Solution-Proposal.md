@@ -21,12 +21,25 @@ the requirements for this application has been set by a external company wishes.
 # Solution.
 The solution will be build using ASP.net for the front-end and Microsoft Azure functions for the backend with the common language C# .Net core 3.1. 
 Persistan layer will be handled through a MSSQL server. 
+The application will hosted through Azure.
 
-# Front-end. 
+# Git. 
+Github will serve as the primary reposetory for the sourcecode, Git hub actions should be implimented for CI/CD 
 
-# Back-end.
+## Branching strategy. 
+To optimice the development the folling branching strategy should be implimented.
 
-# Database.
+* Main branch, locked for direct commites. changes will have to be merged via pull requests. Git action for building and deploying changes to Production eviroment in Azure.  
+
+* Test branch, Locked for direct commites changes will have to be merged via pull requests. Git action for building and deploying changes to Production eviroment in Azure.  if this makes sence with azure payment models.
+
+* Development branch, can have direct commites from contributers. 
+
+# Front-end ASP.Net. 
+
+# Back-end Functions.
+
+# Database MSSQL.
 
 
 

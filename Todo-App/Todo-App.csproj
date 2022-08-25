@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-Todo_App-37D42CEA-C866-47C4-8359-1E539CBAC4D9</UserSecretsId>
+    <UserSecretsId>aspnet-Todo_App-98BAE923-9947-4FF4-AD30-524887F78C54</UserSecretsId>
     <RootNamespace>Todo_App</RootNamespace>
   </PropertyGroup>
 

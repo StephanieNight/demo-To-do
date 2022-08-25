@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Todo_API
+namespace Todo_API.functions
 {
-    public static class Function1
+    public static class Test
     {
         [FunctionName("Test")]
         public static async Task<IActionResult> Run(

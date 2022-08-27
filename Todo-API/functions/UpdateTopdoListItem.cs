@@ -62,7 +62,6 @@ namespace Todo_API.functions
                 log.LogError(e.ToString());
                 return new UnprocessableEntityObjectResult(e.Message);
             }
-
         }
     }
 }

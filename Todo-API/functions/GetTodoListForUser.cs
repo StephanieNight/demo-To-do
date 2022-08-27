@@ -20,7 +20,7 @@ namespace Todo_API.functions
         {
             // getting the body.
             log.LogInformation($"getting lists for user {userid}");
-            
+
             // getting info from database.
             var connectionstring = "Server=tcp:nights-demo-server.database.windows.net,1433;Initial Catalog=todolist-prod;Persist Security Info=False;User ID=night-admin;Password=QAZwsx34l;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();

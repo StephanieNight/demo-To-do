@@ -51,9 +51,9 @@ namespace Todo_API.functions
                     {
                         return new BadRequestObjectResult("the list was not found for that user");
                     }
-                    list.Items.Add(todoitem);                    
+                    list.Items.Add(todoitem);
                     ctx.SaveChanges();
-                    return new CreatedResult("item",JsonConvert.SerializeObject(todoitem));
+                    return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));
                 }
             }
             catch (Exception e)
@@ -61,7 +61,6 @@ namespace Todo_API.functions
                 log.LogError(e.ToString());
                 return new UnprocessableEntityObjectResult(e.Message);
             }
-
         }
     }
 }

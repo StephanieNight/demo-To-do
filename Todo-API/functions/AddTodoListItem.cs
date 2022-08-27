@@ -1,16 +1,16 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
-using Storage.Models;
 using Storage;
+using Storage.Models;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
@@ -53,7 +53,7 @@ namespace Todo_API.functions
                     }
                     list.Items.Add(todoitem);                    
                     ctx.SaveChanges();
-                    return new OkResult();
+                    return new CreatedResult("item",JsonConvert.SerializeObject(todoitem));
                 }
             }
             catch (Exception e)

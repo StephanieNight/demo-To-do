@@ -9,8 +9,10 @@ namespace Storage.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public IdentityUser ASPUser { get; set; }
+        public string ASPUser { get; set; }
         public DateTime CreatedOnDate { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public virtual List<TodoItem> Items { get; set; } = new List<TodoItem>();
         [NotMapped]
         public bool IsDone

@@ -38,9 +38,12 @@ namespace Todo_API.functions
                     using (var ctx = new TodoContext(optionsBuilder.Options))
                     {
                         var list = ctx.TodoLists.Where(l => l.ASPUser == userid && l.Id == listGuid).SingleOrDefault();
+                        
                         if (list == null) return new BadRequestObjectResult("the list was not found for that user");
 
-                        list.Items.AddRange(ctx.TodoItems.Where(i => i.TodolistId == list.Id).ToList());
+                        var Items = ctx.TodoItems.Where(i => i.TodolistId == list.Id).ToList();
+
+                        list.Items.AddRange(Items);
 
                         return new OkObjectResult(list);
                     }

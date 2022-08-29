@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Storage.Models;
 using Todo_App.Models;
 
 namespace Todo_App.Controllers
@@ -20,7 +22,14 @@ namespace Todo_App.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<TodoList> lists = new List<TodoList>();
+            lists.Add(new TodoList()
+            {
+                CreatedOnDate = DateTime.Now,
+                Name = "Test List",
+                Description = "Testing the View"
+            });
+            return View(lists);
         }
 
         public IActionResult Privacy()

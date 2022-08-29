@@ -51,7 +51,7 @@ namespace Todo_API.functions
                     {
                         return new BadRequestObjectResult("the list was not found for that user");
                     }
-                    list.Items.Add(todoitem);
+                    ctx.TodoItems.Add(todoitem);
                     ctx.SaveChanges();
                     return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));
                 }

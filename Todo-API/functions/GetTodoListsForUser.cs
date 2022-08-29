@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class GetTodoListForUser
+    public static class GetTodoListsForUser
     {
         [FunctionName("GetTodoListForUser")]
         public static async Task<IActionResult> Run(

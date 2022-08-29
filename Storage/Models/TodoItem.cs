@@ -16,7 +16,7 @@ namespace Storage.Models
         [DataType(DataType.Date)]
         public DateTime CreatedOnDate { get; set; }
 
-        [Display(Name = "Created on Date")]
+        [Display(Name = "Due Date")]
         [DataType(DataType.Date)]
         public DateTime? DueDate { get; set; }
         public bool isDone { get; set; }

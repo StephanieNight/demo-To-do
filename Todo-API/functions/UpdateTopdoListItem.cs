@@ -22,7 +22,7 @@ namespace Todo_API.functions
             ILogger log, string userid, string itemid)
         {
             // getting the body.
-            log.LogInformation("adding an item to the list list");
+            log.LogInformation($"updating and listitem with the id: {itemid}");
             var requestbody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation(requestbody);
 

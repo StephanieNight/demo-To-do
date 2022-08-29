@@ -13,6 +13,7 @@
         <form asp-action="EditItem">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="TodolistId" />
             <input type="hidden" asp-for="CreatedOnDate" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -42,5 +43,5 @@
 </div>
 
 <div>
-    <a asp-controller="Home" asp-action="Index">Back to Lists</a>
+    <a asp-controller="List" asp-action="Index">Back to List</a>
 </div>

@@ -10,7 +10,7 @@
     <h2>  @ViewData["ListName"]</h2>
     <h3>  @ViewData["Description"]</h3>
     <p>
-        <a asp-controller="List" asp-action="Create">Create New</a>
+        <a asp-controller="List" asp-action="CreateItem" asp-route-id="@ViewData["listID"]">Create New Item</a>
     </p>
     <table class="table">
         <thead>
@@ -47,8 +47,8 @@
                         @Html.DisplayFor(modelItem => item.isDone)
                     </td>
                     <td>
-                        <a asp-controller="Item" asp-action="EditItem" asp-route-id="@item.Id">Edit</a> |                      
-                        <a asp-controller="Item" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-controller="List" asp-action="EditItem" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="List" asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }

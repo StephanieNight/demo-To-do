@@ -11,8 +11,8 @@ namespace Todo_App.Controllers
         //string requestKey = _config.GetSection("AppSettings").GetSection("Key").Value;
 
         protected static HttpClient httpClient = new HttpClient();
-        //protected static string requestBaseUrl = "https://nights-todolist-api.azurewebsites.net/api/";
-        protected static string requestBaseUrl = "http://localhost:7110/api/";
+        protected static string requestBaseUrl = "https://nights-todolist-api.azurewebsites.net/api/";
+        //protected static string requestBaseUrl = "http://localhost:7110/api/";
         protected static string requestKey = "orlFiRCWi0RbyRWp5efxc7SdFBY8z6OckeLylyp2EusrAzFubSStrA==";
         protected readonly ILogger _logger;
 

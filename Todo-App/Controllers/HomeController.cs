@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Storage.Models;
@@ -30,7 +30,7 @@ namespace Todo_App.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
-                return View(new List<TodoList>());
+                return NotFound();
             }
         }
 

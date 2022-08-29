@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace Todo_App.Controllers
 {
@@ -17,11 +18,12 @@ namespace Todo_App.Controllers
         }
         public async Task<IActionResult> Index(Guid Id)
         {
+            
             if (Id == Guid.Empty)
             {
                 return NotFound();
             }
-            ListID = Id;
+          
             try
             {
                 var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Id}/getlist";
@@ -34,6 +36,7 @@ namespace Todo_App.Controllers
                     return NotFound();
                 }
                 ViewData["ListName"] = response.Name;
+                ViewData["listID"] = response.Id;
                 ViewData["Description"] = response.Description;
                 return View(response.Items);
             }
@@ -49,7 +52,7 @@ namespace Todo_App.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateList([Bind("Name,Description,CreatedOnDate")] TodoList list)
+        public async Task<IActionResult> CreateList(TodoList list)
         {
             if (ModelState.IsValid)
             {
@@ -102,12 +105,8 @@ namespace Todo_App.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditList(Guid Id, [Bind("Name,Description,CreatedOnDate")] TodoList list)
+        public async Task<IActionResult> EditList(Guid Id,  TodoList list)
         {
-            if (Id == Guid.Empty)
-            {
-                return NotFound();
-            }
             if (ModelState.IsValid)
             {
                 try
@@ -139,11 +138,11 @@ namespace Todo_App.Controllers
             }
             try
             {
-                var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Id}/getlist";
+                var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Id}/getitem";
                 httpClient.DefaultRequestHeaders.Add("x-functions-key", requestKey);
                 HttpResponseMessage responseMessage = await httpClient.GetAsync(url);
                 string content = await responseMessage.Content.ReadAsStringAsync();
-                TodoList response = JsonConvert.DeserializeObject<TodoList>(content);
+                TodoItem response = JsonConvert.DeserializeObject<TodoItem>(content);
                 if (response == null)
                 {
                     return NotFound();
@@ -158,26 +157,27 @@ namespace Todo_App.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(Guid Id, [Bind("Id,TodolistId,Name,Description,CreatedOnDate,DueDate,isDone")] TodoList list)
+        public async Task<IActionResult> EditItem(Guid Id, TodoItem Item)
         {
             if (Id == Guid.Empty)
             {
                 return NotFound();
             }
+            Item.Id = Id;
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Id}/updatelist";
+                    var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Id}/updateitem";
                     httpClient.DefaultRequestHeaders.Add("x-functions-key", requestKey);
-                    HttpResponseMessage responseMessage = await httpClient.PostAsJsonAsync(url, list);
-
+                    HttpResponseMessage responseMessage = await httpClient.PostAsJsonAsync(url, Item);
 
                     if (responseMessage.IsSuccessStatusCode == false)
                     {
                         return NotFound();
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "List");
                 }
                 catch (Exception e)
                 {
@@ -185,35 +185,47 @@ namespace Todo_App.Controllers
                     return NotFound();
                 }
             }
-            return View(list);
+            return View(Item);
+        }
+        public IActionResult CreateItem(Guid id)
+        {
+            return View(new TodoItem() { TodolistId = id});
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateItem([Bind("Id,TodolistId,Name,Description,CreatedOnDate,DueDate,isDone")] TodoList list)
+        public async Task<IActionResult> CreateItem(Guid id, TodoItem Item)
         {
-            if (ModelState.IsValid)
+            if(id != Guid.Empty)
             {
-                try
+                Item.TodolistId = id;
+                if (ModelState.IsValid)
                 {
-                    var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/Createlist";
-                    httpClient.DefaultRequestHeaders.Add("x-functions-key", requestKey);
-                    HttpResponseMessage responseMessage = await httpClient.PostAsJsonAsync(url, list);
-                    string content = await responseMessage.Content.ReadAsStringAsync();
-                    TodoList response = JsonConvert.DeserializeObject<TodoList>(content);
-                    if (response == null)
+                    try
                     {
+                        var url = requestBaseUrl + $"5eeace50-5886-421a-95a2-753bb34fa340/{Item.TodolistId}/Additem";
+                        httpClient.DefaultRequestHeaders.Add("x-functions-key", requestKey);
+                        HttpResponseMessage responseMessage = await httpClient.PostAsJsonAsync(url, Item);
+                        string content = await responseMessage.Content.ReadAsStringAsync();
+                        TodoList response = JsonConvert.DeserializeObject<TodoList>(content);
+                        if (response == null)
+                        {
+                            return NotFound();
+                        }
+                        return RedirectToAction("Index", "List");
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e.ToString());
                         return NotFound();
                     }
-                    return RedirectToAction("Index", "Home");
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e.ToString());
-                    return NotFound();
-                }
 
+                }
+                else
+                {
+                    return View(Item);
+                }
             }
-            return View(list);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

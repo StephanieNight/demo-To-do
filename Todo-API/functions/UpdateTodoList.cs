@@ -1,36 +1,36 @@
-using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Storage;
+using Microsoft.EntityFrameworkCore;
 using Storage.Models;
-using System;
-using System.IO;
+using Storage;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class UpdateTopdoListItem
+    public static class UpdateTodoList
     {
-        [FunctionName("UpdateTopdoListItem")]
+        [FunctionName("UpdateTodoList")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{userid}/{itemid}/updateitem")] HttpRequest req,
-            ILogger log, string userid, string itemid)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{userid}/{todolistid}/updatelist")] HttpRequest req,
+            ILogger log, string userid, string todolistid)
         {
             // getting the body.
-            log.LogInformation($"updating and listitem with the id: {itemid}");
+            log.LogInformation($"Updateing todolist : {todolistid}");
             var requestbody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation(requestbody);
 
             var todoitem = JsonConvert.DeserializeObject<TodoItem>(requestbody);
-            Guid itemguid;
+            Guid listguid;
 
             // Validation
-            if (Guid.TryParse(itemid, out itemguid) == false) { return new BadRequestObjectResult("itemid is not valid."); }
+            if (Guid.TryParse(todolistid, out listguid) == false) { return new BadRequestObjectResult("itemid is not valid."); }
             if (string.IsNullOrEmpty(todoitem.Name)) { return new BadRequestObjectResult("Name cannot be empty."); }
             if (string.IsNullOrEmpty(todoitem.Description)) { return new BadRequestObjectResult("Description cannot be empty."); }
 
@@ -42,17 +42,15 @@ namespace Todo_API.functions
             {
                 using (var ctx = new TodoContext(optionsBuilder.Options))
                 {
-                    var item = ctx.TodoItems.Where(l => l.Id == itemguid).SingleOrDefault();
-                    if (item == null)
+                    var list = ctx.TodoLists.Where(l => l.Id == listguid).SingleOrDefault();
+                    if (list == null)
                     {
                         return new BadRequestObjectResult("the item was not found for that user");
                     }
-                    item.DueDate = todoitem.DueDate;
-                    item.Name = todoitem.Name;
-                    item.Description = todoitem.Description;
-                    item.CreatedOnDate = todoitem.CreatedOnDate;
-                    item.DueDate = todoitem.DueDate;
-                    item.isDone = todoitem.isDone;
+                    list.Name = todoitem.Name;
+                    list.Description = todoitem.Description;
+                    list.CreatedOnDate = todoitem.CreatedOnDate;
+
                     ctx.SaveChanges();
                     return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));
                 }

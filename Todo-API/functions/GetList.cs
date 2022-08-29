@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class GetListItems
+    public static class GetList
     {
-        [FunctionName("GetListItems")]
+        [FunctionName("GetList")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "{userid}/{listid}/getItems")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "{userid}/{listid}/getList")] HttpRequest req,
             ILogger log, string userid, string listid)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");

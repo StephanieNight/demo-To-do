@@ -48,8 +48,7 @@ namespace Todo_API.functions
                         return new BadRequestObjectResult("the item was not found for that user");
                     }
                     list.Name = todoitem.Name;
-                    list.Description = todoitem.Description;
-                    list.CreatedOnDate = todoitem.CreatedOnDate;
+                    list.Description = todoitem.Description;                   
 
                     ctx.SaveChanges();
                     return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));

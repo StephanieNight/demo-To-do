@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Storage.Models;
@@ -22,7 +22,7 @@ namespace Todo_App.Controllers
             try
             {
                 httpClient.DefaultRequestHeaders.Add("x-functions-key", requestKey);
-                HttpResponseMessage responseMessage = await httpClient.GetAsync(requestUrl);
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(requestBaseUrl+ "5eeace50-5886-421a-95a2-753bb34fa340/lists");
                 string content = await responseMessage.Content.ReadAsStringAsync();
                 IEnumerable<TodoList> response = JsonConvert.DeserializeObject<IEnumerable<TodoList>>(content);
                 return View(response);

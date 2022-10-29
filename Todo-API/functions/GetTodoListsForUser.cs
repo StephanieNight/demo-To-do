@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Storage;
 using System;
@@ -11,27 +10,26 @@ using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class GetTodoListsForUser
+    public class GetTodoListsForUser
     {
+        private TodoContext ctx;
+        public GetTodoListsForUser(TodoContext ctx)
+        {
+            this.ctx = ctx;
+        }
         [FunctionName("GetTodoListForUser")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "{userid}/lists")] HttpRequest req,
             ILogger log, string userid)
         {
             // getting the body.
             log.LogInformation($"getting lists for user {userid}");
 
-            // getting info from database.
-            var connectionstring = "Server=tcp:nights-demo-server.database.windows.net,1433;Initial Catalog=todolist-prod;Persist Security Info=False;User ID=night-admin;Password=QAZwsx34l;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlServer(connectionstring);
             try
             {
-                using (var ctx = new TodoContext(optionsBuilder.Options))
-                {
-                    var lists = ctx.TodoLists.Where(l => l.ASPUser == userid).ToList();
-                    return new OkObjectResult(lists);
-                }
+                var lists = ctx.TodoLists.Where(l => l.ASPUser == userid).ToList();
+                return new OkObjectResult(lists);
+
             }
             catch (Exception e)
             {

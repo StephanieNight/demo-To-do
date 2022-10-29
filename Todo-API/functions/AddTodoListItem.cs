@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Storage;
@@ -14,10 +13,16 @@ using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class AddTodoListItem
+    public class AddTodoListItem
     {
+        private TodoContext ctx;
+
+        public AddTodoListItem(TodoContext ctx)
+        {
+            this.ctx = ctx;
+        }
         [FunctionName("AddTodoListItem")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{userid}/{listid}/Additem")] HttpRequest req,
             ILogger log, string userid, string listid)
         {
@@ -38,23 +43,16 @@ namespace Todo_API.functions
             todoitem.TodolistId = listguid;
             todoitem.CreatedOnDate = DateTime.Now;
 
-            // writing changes to database.
-            var connectionstring = "Server=tcp:nights-demo-server.database.windows.net,1433;Initial Catalog=todolist-prod;Persist Security Info=False;User ID=night-admin;Password=QAZwsx34l;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlServer(connectionstring);
             try
             {
-                using (var ctx = new TodoContext(optionsBuilder.Options))
+                var list = ctx.TodoLists.Where(l => l.ASPUser == userid && l.Id == listguid).SingleOrDefault();
+                if (list == null)
                 {
-                    var list = ctx.TodoLists.Where(l => l.ASPUser == userid && l.Id == listguid).SingleOrDefault();
-                    if (list == null)
-                    {
-                        return new BadRequestObjectResult("the list was not found for that user");
-                    }
-                    ctx.TodoItems.Add(todoitem);
-                    ctx.SaveChanges();
-                    return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));
+                    return new BadRequestObjectResult("the list was not found for that user");
                 }
+                ctx.TodoItems.Add(todoitem);
+                ctx.SaveChanges();
+                return new CreatedResult("item", JsonConvert.SerializeObject(todoitem));
             }
             catch (Exception e)
             {

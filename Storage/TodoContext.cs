@@ -1,19 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.Configuration;
 using Storage.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data.Entity;
 
 namespace Storage
 {
-    public class TodoContext : IdentityDbContext
+    public class TodoContext : DbContext
     {
-        public TodoContext(DbContextOptions<TodoContext> options)
-            : base(options)
-        {
-        }
-
+        public TodoContext(IConfiguration configuration)
+            : base(configuration.GetConnectionString("sqldatabase")) { }
         public DbSet<TodoItem> TodoItems { get; set; }
         public DbSet<TodoList> TodoLists { get; set; }
     }

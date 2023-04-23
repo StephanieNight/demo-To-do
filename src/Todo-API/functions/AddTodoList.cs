@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Storage;
@@ -13,10 +12,16 @@ using System.Threading.Tasks;
 
 namespace Todo_API.functions
 {
-    public static class AddTodoList
+    public class AddTodoList
     {
+        private TodoContext ctx;
+
+        public AddTodoList(TodoContext ctx)
+        {
+            this.ctx = ctx;
+        }
         [FunctionName("AddTodoList")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{userid}/Createlist")] HttpRequest req,
             ILogger log, string userid)
         {
@@ -34,18 +39,11 @@ namespace Todo_API.functions
             todolist.ASPUser = userid;
             todolist.CreatedOnDate = DateTime.Now;
 
-            // writing changes to database.
-            var connectionstring = "Server=tcp:nights-demo-server.database.windows.net,1433;Initial Catalog=todolist-prod;Persist Security Info=False;User ID=night-admin;Password=QAZwsx34l;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlServer(connectionstring);
             try
             {
-                using (var ctx = new TodoContext(optionsBuilder.Options))
-                {
-                    ctx.Add(todolist);
-                    ctx.SaveChanges();
-                    return new CreatedResult("list", JsonConvert.SerializeObject(todolist));
-                }
+                ctx.TodoLists.Add(todolist);
+                ctx.SaveChanges();
+                return new CreatedResult("list", JsonConvert.SerializeObject(todolist));
             }
             catch (Exception e)
             {

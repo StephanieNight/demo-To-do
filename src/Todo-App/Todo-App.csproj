@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>aspnet-Todo_App-98BAE923-9947-4FF4-AD30-524887F78C54</UserSecretsId>
     <RootNamespace>Todo_App</RootNamespace>
   </PropertyGroup>

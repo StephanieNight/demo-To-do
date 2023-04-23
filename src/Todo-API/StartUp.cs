@@ -7,7 +7,6 @@ using System.IO;
 [assembly: FunctionsStartup(typeof(Todo_API.StartUp))]
 namespace Todo_API
 {
-
     public class StartUp : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
